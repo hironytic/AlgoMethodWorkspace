@@ -1,0 +1,18 @@
+options:
+  - name: task
+    description: The number of the task
+    question: Task number?
+    required: true
+    type: string
+
+files:
+  - path: "Task{{ task }}/.gitignore"
+    template: template/.gitignore
+  - path: "Task{{ task }}/Package.swift"
+    template: template/Package.swift
+  - path: "Task{{ task }}/README.md"
+    template: template/README.md
+  - path: "Task{{ task }}/Sources/Task{{ task }}/main.swift"
+    template: template/Sources/Task/main.swift
+  - path: "Task{{ task }}/Sources/Task{{ task }}/TestData.swift"
+    template: template/Sources/Task/TestData.swift
