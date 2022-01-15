@@ -8,6 +8,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Task{{ task }}",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .define("DEVELOPING", .when(configuration: .debug))
+            ]
+        ),
     ]
 )

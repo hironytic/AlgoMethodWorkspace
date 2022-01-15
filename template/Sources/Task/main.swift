@@ -1,6 +1,5 @@
 import Foundation
 
-//func read() -> String { readLine()! }
 // ----------------------------------------------------------
 func ofInt<S: StringProtocol>(_ string: S) -> Int { Int(string)! }
 func ofDouble<S: StringProtocol>(_ string: S) -> Double { Double(string)! }
@@ -25,8 +24,7 @@ func main() {
 }
 
 // ----------------------------------------------------------
-// CodeTemplateのread()をこっちに差し替えれば
-// 標準入力の代わりにコードで入力を与えられる。
+#if DEVELOPING
 let testData = TestData("""
 input
 1
@@ -35,5 +33,8 @@ input
 func read() -> String {
     return testData.read()
 }
+#else
+func read() -> String { readLine()! }
+#endif
 
 main()
