@@ -1,5 +1,6 @@
 import Foundation
 
+#if DEVELOPING
 class TestData {
     let data: [String]
     var current: Int = 0
@@ -18,3 +19,4 @@ class TestData {
         return result
     }
 }
+#endif
