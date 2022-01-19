@@ -15,39 +15,37 @@ extension Array {
 }
 // ----------------------------------------------------------
 
-/// nは素数か？（n >= 2 を指定する）
-func isPrimeNumber(_ n: Int) -> Bool {
-    var result = true
-    var i = 2
-    while i * i <= n {
-        if n.isMultiple(of: i) {
-            result = false
-            break
-        }
-        i += 1
-    }
-    return result
-}
-
 func main() {
     let (a, b) = read().asList(ofInt).asTuple()
     
-    var flags = [Bool](repeating: true, count: b - a + 1)
+    let sqrtB = Int(sqrt(Double(b)))
+    var flagsToSqrtB = [Bool](repeating: true, count: sqrtB + 1)  // 0 ... sqrt(b) が素数か？（※index=2以降のみ使う）
+    var flagsAtoB = [Bool](repeating: true, count: b - a + 1) // a ... b が素数か？
     
-    for i in 0 ... b - a {
-        if flags[i] {
-            let n = i + a
-            if !isPrimeNumber(n) {
-                flags[i] = false
-            } else if n + n <= b {
-                for j in stride(from: n + n, through: b, by: n) {
-                    flags[j] = false
+    if (2 <= sqrtB) {
+        for i in 2 ... sqrtB {
+            if flagsToSqrtB[i] {
+                // flagsToSqrtB の方の i の合成数を落とす
+                if i + i <= sqrtB {
+                    for j in stride(from: i + i, through: sqrtB, by: i) {
+                        flagsToSqrtB[j] = false
+                    }
+                }
+
+                // flagsAtoB の方の i の合成数を落とす
+                let start = ((a + i - 1) / i) * i
+                if start <= b {
+                    for j in stride(from: start, through: b, by: i) {
+                        if j != i { // i 自身は素数なので落としてはいけない
+                            flagsAtoB[j - a] = false
+                        }
+                    }
                 }
             }
         }
     }
 
-    print(flags.lazy.filter { $0 }.count)
+    print(flagsAtoB.lazy.filter { $0 }.count)
 }
 
 // ----------------------------------------------------------
