@@ -19,26 +19,30 @@ func main() {
     let (a, b) = read().asList(ofInt).asTuple()
     
     let sqrtB = Int(sqrt(Double(b)))
-    var flagsToSqrtB = [Bool](repeating: true, count: sqrtB + 1)  // 0 ... sqrt(b) が素数か？（※index=2以降のみ使う）
+    var flagsToSqrtB = [Bool](repeating: true, count: sqrtB + 1)  // 0 ... sqrt(b) が素数か？
     var flagsAtoB = [Bool](repeating: true, count: b - a + 1) // a ... b が素数か？
     
     if (2 <= sqrtB) {
+        // sqrt(b) までの素数を洗い出す
+        flagsToSqrtB[0] = false
+        flagsToSqrtB[1] = false
         for i in 2 ... sqrtB {
             if flagsToSqrtB[i] {
-                // flagsToSqrtB の方の i の合成数を落とす
                 if i + i <= sqrtB {
                     for j in stride(from: i + i, through: sqrtB, by: i) {
                         flagsToSqrtB[j] = false
                     }
                 }
+            }
+        }
 
-                // flagsAtoB の方の i の合成数を落とす
-                let start = ((a + i - 1) / i) * i
-                if start <= b {
-                    for j in stride(from: start, through: b, by: i) {
-                        if j != i { // i 自身は素数なので落としてはいけない
-                            flagsAtoB[j - a] = false
-                        }
+        // 洗い出した素数 i について、a から b までの間にある i の倍数を落とす
+        flagsToSqrtB.lazy.enumerated().filter { $0.element }.map { $0.offset }.forEach { i in
+            let start = ((a + i - 1) / i) * i
+            if start <= b {
+                for j in stride(from: start, through: b, by: i) {
+                    if j != i { // i 自身は素数なので落としてはいけない
+                        flagsAtoB[j - a] = false
                     }
                 }
             }
