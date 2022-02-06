@@ -31,16 +31,24 @@ func main() {
     let (a, b, r, s) = read().asList(ofInt).asTuple()
     let g = gcd(a - r, b - s)
     
-    var ans = -1
-    var i = max(r, s) + 1
-    while i <= g {
+    var ans = Int.max
+    let m = max(r, s) + 1
+    var i = 1
+    while i * i <= g {
         if g.isMultiple(of: i) {
-            ans = i
-            break
+            if i >= m {
+                ans = min(ans, i)
+            }
+            if i * i != g {
+                let j = g / i
+                if j >= m {
+                    ans = min(ans, j)
+                }
+            }
         }
         i += 1
     }
-    print(ans)
+    print(ans == Int.max ? -1 : ans)
 }
 
 // ----------------------------------------------------------
