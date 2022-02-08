@@ -15,17 +15,26 @@ extension Array {
 }
 // ----------------------------------------------------------
 
+/// ユークリッドの互除法を用いて最大公約数を求めます。
+/// O(log b)
+/// - Parameters:
+///   - a: 1つ目の整数（正の整数）
+///   - b: 2つ目の整数（正の整数）
+/// - Returns: a と b の最大公約数
+func gcd(_ a: Int, _ b: Int) -> Int {
+    guard b != 0 else { return a }
+    return gcd(b, a % b)
+}
+
 func main() {
-    let (a_, b_, k) = read().asList(ofInt).asTuple()
-    let a = min(a_, b_)
-    let b = max(a_, b_)
-    
-    let c = b - k
+    let (a, b, k) = read().asList(ofInt).asTuple()
+
     let ans: Bool
-    if c < 0 {
+    if k > max(a, b) {
         ans = false
     } else {
-        ans = c.isMultiple(of: a) || c.isMultiple(of: b - a)
+        let g = gcd(a, b)
+        ans = k.isMultiple(of: g)
     }
     print(ans ? "Yes" : "No")
 }
