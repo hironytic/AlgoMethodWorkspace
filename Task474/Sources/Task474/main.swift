@@ -27,16 +27,6 @@ func gcd(_ a: Int, _ b: Int) -> Int {
     return gcd(b, a % b)
 }
 
-/// ユークリッドの互除法を用いて最小公倍数を求めます。
-/// O(log b)
-/// - Parameters:
-///   - a: 1つ目の整数
-///   - b: 2つ目の整数
-/// - Returns: a と b の最小公倍数
-func lcm(_ a: Int, _ b: Int) -> Int {
-    return a / gcd(a, b) * b
-}
-
 func main() {
     let (a, b, c, d) = read().asList(ofInt).asTuple()
     let w = abs(c - a)
@@ -47,8 +37,8 @@ func main() {
     } else if h == 0 {
         ans = w - 1
     } else {
-        let l = lcm(w, h)
-        ans = w * h / l - 1
+        let g = gcd(w, h)
+        ans = g - 1
     }
     print(ans)
 }
