@@ -1,5 +1,13 @@
 import Foundation
 
+func main() {
+    let s = read()
+    let n = read().asInt()
+    let (a, b) = read().asList(ofInt).asTuple()
+    
+    print("Hello World!")
+}
+
 // ----------------------------------------------------------
 func ofInt<S: StringProtocol>(_ string: S) -> Int { Int(string)! }
 func ofDouble<S: StringProtocol>(_ string: S) -> Double { Double(string)! }
@@ -13,16 +21,6 @@ extension Array {
     func asTuple() -> (Element, Element) { (self[0], self[1]) }
     func asTuple() -> (Element, Element, Element) { (self[0], self[1], self[2]) }
 }
-// ----------------------------------------------------------
-
-func main() {
-    let s = read()
-    let n = read().asInt()
-    let (a, b) = read().asList(ofInt).asTuple()
-    
-    print("Hello World!")
-}
-
 // ----------------------------------------------------------
 #if DEVELOPING
 let testData = TestData("""
