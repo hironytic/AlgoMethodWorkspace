@@ -1,19 +1,21 @@
 import Foundation
 
-// うーん、LTEになりそうな気がする
 func main() {
     let (_, m) = read().asList(ofInt).asTuple()
     let a = read().asList(ofInt)
     
-    var ab2 = Set<Int>()
+    var ab2 = [Bool](repeating: false, count: m)
     for x in a {
         for y in a {
-            ab2.insert(x * x + y * y)
+            let x2y2 = x * x + y * y
+            if x2y2 < m {
+                ab2[x2y2] = true
+            }
         }
     }
-    
-    for i in ab2 {
-        if ab2.contains(m - i) {
+
+    for i in 1 ..< m {
+        if ab2[i] && ab2[m - i] {
             print("Yes")
             return
         }
