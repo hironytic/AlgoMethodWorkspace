@@ -5,36 +5,24 @@ func main() {
     
     var parent = [Int](repeating: -1, count: n)
     var children = [[Int]](repeating: [], count: n)
-    parent[0] = -2 // ちょっと特別な値にしておく
-    
-    var queue = ArraySlice<(Int, Int)>()
-    
-    // a, b どっちが親かわからないけど親子関係を結ぶ
-    func connect(_ a: Int, _ b: Int) {
-        precondition(parent[a] == -1 || parent[b] == -1)    // どちらかの親はまだ決まってないはず
-        if parent[a] != -1 {
-            // aの親はもういるので、bがaの子になる
-            parent[b] = a
-            children[a].append(b)
-        } else if parent[b] != -1 {
-            // bの親はもういるので、aがbの子になる
-            parent[a] = b
-            children[b].append(a)
-        } else {
-            // どっちが親かわからないので後回し
-            queue.append((a, b))
-        }
-    }
+    var connected = [[Int]](repeating: [], count: n)
     
     for _ in 0 ..< n - 1 {
         let (a, b) = read().asList(ofInt).asTuple()
-        connect(a, b)
+        connected[a].append(b)
+        connected[b].append(a)
     }
-    
-    while !queue.isEmpty {
-        let (a, b) = queue.removeFirst()
-        connect(a, b)
+
+    func appendChildren(_ v: Int, _ p: Int) {
+        for n in connected[v] {
+            if n != p {
+                parent[n] = v
+                children[v].append(n)
+                appendChildren(n, v)
+            }
+        }
     }
+    appendChildren(0, -1)
     
     // 兄弟をソート
     children = children.map { $0.sorted() }
