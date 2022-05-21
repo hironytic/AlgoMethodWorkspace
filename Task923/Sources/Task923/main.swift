@@ -2,42 +2,31 @@ import Foundation
 
 func main() {
     let h = read().asInt()
-    var pow2 = [Int](repeating: 0, count: h + 1)
-    var b = 1
-    for i in 0 ... h {
-        pow2[i] = b
-        b *= 2
+    var mx = 1
+    for _ in 0 ..< h {
+        mx *= 2
     }
-    
-    func log2(_ n: Int) -> Int {
-        var ans = 0
-        while ans < pow2.count && n >= pow2[ans] {
-            ans += 1
-        }
-        return ans - 1
-    }
+    mx -= 2 // 子を持つ頂点の最大の番号
     
     let q = read().asInt()
     for _ in 0 ..< q {
         let (t, v) = read().asList(ofInt).asTuple()
-        let hv = log2(v + 1)
-        let ix = v + 1 - pow2[hv]
         switch t {
         case 0: // 親
-            if hv > 0 {
-                print(pow2[hv - 1] - 1 + ix / 2)
+            if v > 0 {
+                print((v - 1) / 2)
             } else {
                 print(-1)
             }
         case 1: // 左の子
-            if hv < h {
-                print(pow2[hv + 1] - 1 + ix * 2)
+            if v <= mx {
+                print(2 * v + 1)
             } else {
                 print(-1)
             }
         case 2: // 右の子
-            if hv < h {
-                print(pow2[hv + 1] - 1 + ix * 2 + 1)
+            if v <= mx {
+                print(2 * v + 2)
             } else {
                 print(-1)
             }
