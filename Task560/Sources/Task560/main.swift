@@ -83,8 +83,11 @@ class UnionFind {
         parents[ry] = rx
         let rank = max(ranks[rx], ranks[ry] + 1)
         ranks[rx] = rank
+// ↓これを
         let count = counts[ry]
         counts[rx] += count
+// ↓こうすると TLE
+//        counts[rx] += counts[ry]
         return true
     }
     
