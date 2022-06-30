@@ -9,15 +9,6 @@ func main() {
         G[b].append(a)
     }
 
-    if N == 1 {
-        print(1)
-        return
-    }
-    if N == 2 {
-        print(0)
-        return
-    }
-
     var ans = 0
     var seen = [Bool](repeating: false, count: N)
     func dfs(from v: Int) -> Bool {
