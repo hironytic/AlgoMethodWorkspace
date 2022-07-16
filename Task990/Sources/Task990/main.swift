@@ -8,11 +8,13 @@ struct Edge {
 
 let INF = 1_000_000_000
 
-func add(_ a: Int, _ b: Int) -> Int {
-    if a == INF || a == -INF {
-        return INF
-    } else {
-        return a + b
+extension Int {
+    func plus(_ x: Int) -> Int {
+        if self == INF || self == -INF {
+            return self
+        } else {
+            return self + x
+        }
     }
 }
 
@@ -27,33 +29,24 @@ func main() {
         G[e.to].append(e.from)
     }
 
-    // 頂点(N - 1)にたどり着ける頂点
-    var seen = [Bool](repeating: false, count: N)
-    seen[N - 1] = true
+    // 頂点(N - 1)にたどり着ける頂点は INF に、たどり着けない頂点は -INF になる
+    var d = [Int](repeating: -INF, count: N)
+    d[N - 1] = INF
     var queue = ArraySlice<Int>()
     queue.append(N - 1)
     while let v = queue.popFirst() {
-        for n in G[v] where !seen[n] {
-            seen[n] = true
+        for n in G[v] where d[n] == -INF {
+            d[n] = INF
             queue.append(n)
         }
     }
-    if !seen[0] {
-        print("impossible")
-        return
-    }
-
-    // 頂点(N - 1)にたどり着ける頂点に向かう辺だけ取り出したもの
-    let EE = E.filter { seen[$0.to] }
-    
-    var d = [Int](repeating: INF, count: N)
     d[0] = 0
 
     func step() -> Bool {
         var isChanged = false
-        for e in EE {
+        for e in E {
             let value = d[e.to]
-            let updated = add(d[e.from], e.weight)
+            let updated = d[e.from].plus(e.weight)
             if value > updated {
                 isChanged = true
                 d[e.to] = updated
@@ -69,7 +62,10 @@ func main() {
             break
         }
     }
-    if !isSettled {
+    if d[N - 1] == INF {
+        print("impossible")
+    }
+    else if !isSettled {
         print("-inf")
     } else {
         print(d[N - 1])
