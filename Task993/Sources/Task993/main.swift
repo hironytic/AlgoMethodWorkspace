@@ -2,7 +2,7 @@ import Foundation
 
 let INF = 1_000_000_000
 
-func main() {
+func main(read: () -> String) {
     let (N, M) = read().asList(ofInt).asTuple()
     var G = [[(to: Int, weight: Int)]](repeating: [], count: N)
     for _ in 0 ..< M {
@@ -42,25 +42,9 @@ extension Array {
     func asTuple() -> (Element, Element, Element) { (self[0], self[1], self[2]) }
 }
 // ----------------------------------------------------------
-#if DEVELOPING
-let testData = TestData("""
-5 10
-3 1 46
-2 1 48
-4 2 21
-0 1 26
-4 1 50
-4 0 87
-1 0 57
-1 3 42
-1 2 52
-0 4 10
-""")
-func read() -> String {
-    return testData.read()
-}
-#else
-func read() -> String { readLine()! }
-#endif
 
-main()
+#if DEVELOPING
+validationList.forEach { $0.execute(main) }
+#else
+main { readLine()! }
+#endif
