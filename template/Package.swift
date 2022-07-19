@@ -6,9 +6,15 @@ import PackageDescription
 let package = Package(
     name: "Task{{ task }}",
     targets: [
+        .target(
+            name: "TestData",
+            swiftSettings: [
+                .define("DEVELOPING", .when(configuration: .debug))
+            ]
+        ),
         .executableTarget(
             name: "Task{{ task }}",
-            dependencies: [],
+            dependencies: ["TestData"],
             swiftSettings: [
                 .define("DEVELOPING", .when(configuration: .debug))
             ]

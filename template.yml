@@ -14,5 +14,7 @@ files:
     template: template/README.md
   - path: "Task{{ task }}/Sources/Task{{ task }}/main.swift"
     template: template/Sources/Task/main.swift
-  - path: "Task{{ task }}/Sources/Task{{ task }}/TestData.swift"
-    template: template/Sources/Task/TestData.swift
+  - path: "Task{{ task }}/Sources/Task{{ task }}/validation.swift"
+    template: template/Sources/Task/validation.swift
+  - path: "Task{{ task }}/Sources/TestData/TestData.swift"
+    template: template/Sources/TestData/TestData.swift

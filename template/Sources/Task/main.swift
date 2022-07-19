@@ -1,11 +1,10 @@
 import Foundation
 
-func main() {
-    let s = read()
-    let n = read().asInt()
+func main(read: () -> String) {
+    let S = read()
+    let N = read().asInt()
     let (a, b) = read().asList(ofInt).asTuple()
-    
-    print("Hello World!")
+    print("\(S) \(N) \(a) \(b)")
 }
 
 // ----------------------------------------------------------
@@ -22,17 +21,9 @@ extension Array {
     func asTuple() -> (Element, Element, Element) { (self[0], self[1], self[2]) }
 }
 // ----------------------------------------------------------
-#if DEVELOPING
-let testData = TestData("""
-input
-1
-2 3
-""")
-func read() -> String {
-    return testData.read()
-}
-#else
-func read() -> String { readLine()! }
-#endif
 
-main()
+#if DEVELOPING
+validate(main)
+#else
+main { readLine()! }
+#endif
