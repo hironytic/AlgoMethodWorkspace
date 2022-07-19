@@ -7,6 +7,11 @@ let data1 = TestData(enabled: true, name: "Data 1", text: """
 1 3 6
 0 1 11
 1 2 7
+""", expected: """
+0
+11
+18
+17
 """)
 
 let data2 = TestData(enabled: true, name: "Data 2", text: """
@@ -21,15 +26,27 @@ let data2 = TestData(enabled: true, name: "Data 2", text: """
 1 3 42
 1 2 52
 0 4 10
+""", expected: """
+0
+26
+31
+68
+10
 """)
 
-let data3 = TestData(enabled: false, name: "Data 3", text: """
+let data3 = TestData(enabled: false, name: "Data 3",
+text: """
+""", expected: """
 """)
 
-let data4 = TestData(enabled: false, name: "Data 4", text: """
+let data4 = TestData(enabled: false, name: "Data 4",
+text: """
+""", expected: """
 """)
 
-let data5 = TestData(enabled: false, name: "Data 5", text: """
+let data5 = TestData(enabled: false, name: "Data 5",
+text: """
+""", expected: """
 """)
 
 let validationList = [data1, data2, data3, data4, data5]

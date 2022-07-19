@@ -2,7 +2,7 @@ import Foundation
 
 let INF = 1_000_000_000
 
-func main(read: () -> String) {
+func main(read: () -> String, print: (Any...) -> Void) {
     let (N, M) = read().asList(ofInt).asTuple()
     var G = [[(to: Int, weight: Int)]](repeating: [], count: N)
     for _ in 0 ..< M {
@@ -46,5 +46,5 @@ extension Array {
 #if DEVELOPING
 validationList.forEach { $0.execute(main) }
 #else
-main { readLine()! }
+main(read: { readLine()! }, print: print)
 #endif
