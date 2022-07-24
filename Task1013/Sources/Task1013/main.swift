@@ -13,38 +13,35 @@ func main(read: () -> String) {
         return Edge(v1: u, v2: v, weight: w)
     }.sorted { lhs, rhs in lhs.weight < rhs.weight }
 
-    let uf = UnionFind(count: N)
-    
-    // 同じ重みの辺たちのうち、どの全域木にも含まれる辺の数を返す
-    func judge(_ edges: [Edge]) -> Int {
-        // 選択できそうにないものはさっさと捨てる
-        var candidates = edges.filter { e in !uf.isSameGroup(e.v1, e.v2) }
-        
-        // 選択したことで他に選択できないものが現れたら、それと選択できなくなったものはカウントしない
-        var count = 0
-        while let e = candidates.popLast() {
-            let lc = candidates.count
-            uf.unite(e.v1, e.v2)
-            candidates = candidates.filter { e in !uf.isSameGroup(e.v1, e.v2) }
-            if candidates.count == lc {
-                count += 1
+    // 辺 except は使わない場合の最小値 W を算出
+    // except を使わないことで木が作れなくなる場合は Int.max を返します。
+    func calcW(except: Int) -> Int {
+        let uf = UnionFind(count: N)
+        var w = 0
+        for (ix, e) in E.enumerated() where ix != except {
+            if !uf.isSameGroup(e.v1, e.v2) {
+                uf.unite(e.v1, e.v2)
+                w += e.weight
             }
         }
-        return count
+        if uf.countInGroup(of: 0) == N {
+            return w
+        } else {
+            return Int.max
+        }
     }
     
+    // すべての辺を使って良い場合の最小値（本当の最小値）
+    let W = calcW(except: -1)
+    
     var ans = 0
-    var edges: [Edge] = []
-    var lastWeight = Int.min
-    for e in E {
-        if e.weight != lastWeight {
-            ans += judge(edges)
-            edges = []
+    for i in 0 ..< E.count {
+        let wi = calcW(except: i)
+        if wi > W {
+            // i がいないと最小を作れないので絶対必要
+            ans += 1
         }
-        edges.append(e)
-        lastWeight = e.weight
     }
-    ans += judge(edges)
     print(ans)
 }
 
