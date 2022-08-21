@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Task1057",
+            "program": "${workspaceFolder:Task1057}/.build/debug/Task1057",
+            "args": [],
+            "cwd": "${workspaceFolder:Task1057}",
+            "preLaunchTask": "swift: Build Debug Task1057"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release Task1057",
+            "program": "${workspaceFolder:Task1057}/.build/release/Task1057",
+            "args": [],
+            "cwd": "${workspaceFolder:Task1057}",
+            "preLaunchTask": "swift: Build Release Task1057"
+        }
+    ]
+}
