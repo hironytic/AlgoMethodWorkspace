@@ -2,51 +2,41 @@ import Foundation
 
 func main(read: () -> String) {
     let (H, W) = read().asList(ofInt).asTuple()
-    let B = Board(height: H, width: W, values: (0 ..< H).map { _ in
+    let values: [[Bool]] = (0 ..< H).map { _ in
         read().map { $0 == "#" }
-    })
-    for i in 0 ..< (1 << (H * W)) {
-        var b = B
-        for j in 0 ..< H * W where i & (1 << j) != 0 {
-            b.select(y: j / W, x: j % W)
+    }
+    let cells = values.reduce(0) { acc, row in
+        let line = row.enumerated().reduce(0) { acc, cell in
+            return cell.element ? acc | (1 << cell.offset) : acc
         }
-        if b.isClear {
+        return (acc << W) | line
+    }
+    var masks = [Int]()
+    for y in 0 ..< H {
+        for x in 0 ..< W {
+            var mask = 0
+            for (dy, dx) in [(-1, 0), (0, -1), (0, 0), (0, 1), (1, 0)] {
+                let yy = y + dy
+                let xx = x + dx
+                if yy >= 0 && yy < H && xx >= 0 && xx < W {
+                    mask |= (1 << (yy * W + xx))
+                }
+            }
+            masks.append(mask)
+        }
+    }
+
+    for i in 0 ..< (1 << (H * W)) {
+        var value = cells
+        for j in 0 ..< H * W where i & (1 << j) != 0 {
+            value ^= masks[j]
+        }
+        if value == 0 {
             print("Yes")
             return
         }
     }
     print("No")
-}
-
-struct Board {
-    private var rawValue: Int
-    private var height: Int
-    private var width: Int
-    init(height: Int, width: Int, values: [[Bool]]) {
-        self.height = height
-        self.width = width
-        self.rawValue = values.reduce(0) { acc, row in
-            let line = row.enumerated().reduce(0) { acc, cell in
-                return cell.element ? acc | (1 << cell.offset) : acc
-            }
-            return (acc << width) | line
-        }
-    }
-
-    var isClear: Bool {
-        return rawValue == 0
-    }
-    
-    private mutating func reverse(y: Int, x: Int) {
-        guard y >= 0 && y < height && x >= 0 && x < width else { return }
-        rawValue ^= (1 << (y * width + x))
-    }
-    
-    mutating func select(y: Int, x: Int) {
-        for (dy, dx) in [(-1, 0), (0, -1), (0, 0), (0, 1), (1, 0)] {
-            reverse(y: y + dy, x: x + dx)
-        }
-    }
 }
 
 // ----------------------------------------------------------
