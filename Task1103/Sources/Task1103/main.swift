@@ -1,14 +1,30 @@
 import Foundation
 
+var x: [Int] = []
+
+struct Section: Comparable {
+    var leftIndex: Int
+    var rightIndex: Int
+    
+    static func == (lhs: Section, rhs: Section) -> Bool {
+        return x[lhs.rightIndex] - x[lhs.leftIndex] == x[rhs.rightIndex] - x[lhs.rightIndex]
+    }
+    
+    static func < (lhs: Section, rhs: Section) -> Bool {
+        return x[lhs.rightIndex] - x[lhs.leftIndex] < x[rhs.rightIndex] - x[lhs.rightIndex]
+    }
+}
+
 func main(read: () -> String) {
     let (N, K) = read().asList(ofInt).asTuple()
-    let x = read().asList(ofInt)
+    x = read().asList(ofInt)
 
-    var queue = ArraySlice<(leftIndex: Int, rightIndex: Int)>([(leftIndex: 0, rightIndex: N - 1)])
+    var queue = Heap<Section>(keys: [.init(leftIndex: 0, rightIndex: N - 1)])
     var ans = x[N - 1] - x[0]
     var k = K - 2
     while k > 0 {
-        guard let (leftIndex, rightIndex) = queue.popFirst() else { preconditionFailure() }
+        guard let section = queue.popFirst() else { preconditionFailure() }
+        let (leftIndex, rightIndex) = (section.leftIndex, section.rightIndex)
         precondition(rightIndex - leftIndex > 1)
         if rightIndex - leftIndex == 2 {
             // 間に1つだけなのでそこに配置してそれ以上は無理
@@ -34,10 +50,10 @@ func main(read: () -> String) {
         ans = min(ans, x[midIndex] - x[leftIndex], x[rightIndex] - x[midIndex])
 
         if midIndex - leftIndex > 1 {
-            queue.append((leftIndex: leftIndex, rightIndex: midIndex))
+            queue.push(.init(leftIndex: leftIndex, rightIndex: midIndex))
         }
         if rightIndex - midIndex > 1 {
-            queue.append((leftIndex: midIndex, rightIndex: rightIndex))
+            queue.push(.init(leftIndex: midIndex, rightIndex: rightIndex))
         }
     }
     print(ans)
@@ -85,6 +101,88 @@ func binarySearch(low: Int, high: Int, judge: (Int) throws -> Int) rethrows -> (
     
     // 見つからなかった
     return (false, low)
+}
+/// ヒープ
+struct Heap<Key: Comparable> {
+    private var keys: [Key]
+
+    init() {
+        self.init(keys: [])
+    }
+    
+    init(keys: [Key]) {
+        self.keys = keys
+        
+        // 条件を満たすように並べ替える
+        var px = (self.keys.count - 2) / 2  // 最後の葉の親
+        while px >= 0 {
+            swapDown(from: px)
+            px -= 1
+        }
+    }
+    
+    /// キーを追加します。
+    /// - Parameter key: キー
+    mutating func push(_ key: Key) {
+        var ix = keys.count
+        keys.append(key)
+        while ix > 0 {
+            let pix = (ix - 1) / 2
+            if keys[pix] >= keys[ix] {
+                break
+            }
+            keys.swapAt(ix, pix)
+            ix = pix
+        }
+    }
+    
+    /// 一番大きなキーを返します。
+    /// - Returns: 一番大きなキー。1つもキーがなければ `nil` 。
+    var first: Key? {
+        return keys.first
+    }
+    
+    /// 一番大きなキーを取り除きます。
+    /// - Returns: 取り除いたキー。1つもキーがなければ `nil` 。
+    mutating func popFirst() -> Key? {
+        guard let firstKey = keys.first else { return nil }
+        guard let key = keys.popLast() else { return nil }
+        if !keys.isEmpty {
+            keys[0] = key
+            swapDown(from: 0)
+        }
+        return firstKey
+    }
+    
+    /// 指定された頂点のキーがヒープの条件を満たすように子孫とキーを交換していきます。
+    /// - Parameter from: 頂点
+    private mutating func swapDown(from: Int) {
+        let count = keys.count
+        let key = keys[from]
+        var i = from
+        while 2 * i + 1 < count {   // 左の子の頂点 (2 * i + 1) があれば
+            var ci = 2 * i + 1      // 左の子の頂点番号
+            var ckey = keys[ci]     // 左の子のキー
+            if ci + 1 < count {          // 右の子の頂点 (ci + 1  ==  2 * i + 2) があれば
+                let ckey2 = keys[ci + 1] // 右の子のキー
+                if ckey < ckey2 {        // 右の子のキーの方が大きければそちらで上書き
+                    ci += 1
+                    ckey = ckey2
+                }
+            }
+            if key >= ckey {
+                break
+            }
+
+            keys.swapAt(i, ci)
+            i = ci
+        }
+    }
+}
+extension Heap {
+    init<S: Sequence>(keys: S) where S.Element == Key {
+        self.init(keys: Array(keys))
+    }
 }
 // ----------------------------------------------------------
 

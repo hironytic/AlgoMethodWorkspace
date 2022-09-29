@@ -24,7 +24,10 @@ let data3 = TestData(name: "Data 3", text: """
 """)
 
 let data4 = TestData(name: "Data 4", text: """
+7 4
+1 10000000 10000002 10000004 20000000 30000000 30000002
 """, expected: """
+9999999
 """)
 
 let data5 = TestData(name: "Data 5", text: """
@@ -32,10 +35,10 @@ let data5 = TestData(name: "Data 5", text: """
 """)
 
 let validationList = [
-    data1,
-    data2,
-    data3,
-//    data4,
+//    data1,
+//    data2,
+//    data3,
+    data4,
 //    data5,
 ]
 
