@@ -35,9 +35,9 @@ let data5 = TestData(name: "Data 5", text: """
 """)
 
 let validationList = [
-//    data1,
-//    data2,
-//    data3,
+    data1,
+    data2,
+    data3,
     data4,
 //    data5,
 ]
