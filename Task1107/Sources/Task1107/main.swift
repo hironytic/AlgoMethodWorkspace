@@ -4,28 +4,29 @@ func main(read: () -> String) {
     let (N, M) = read().asList(ofInt).asTuple()
     let W = read().asList(ofInt)
     
-    // dp[i][j] … ボールを先頭からi個目まで、選ぶか選ばないかしたときに、
-    //             重さがjになるものがあればそのときの選んだボールの個数。
-    //             -1なら重さjになるパターンはない。
-    var dp = [[Int]](repeating: .init(repeating: -1, count: M), count: N + 1)
-    dp[0][0] = 0
+    // dp[i][j][k]
+    // ボールを先頭からi個目まで、選ぶか選ばないかしたときに、
+    // 重さがjになり、そのときのボールの数が奇数（k: 1）か偶数（k: 0）になるような
+    // パターンが存在するならtrue
+    var dp = [[[Bool]]](repeating: .init(repeating: .init(repeating: false, count: 2), count: M), count: N + 1)
+    dp[0][0][0] = true
     for i in 1 ... N {
-        for j in 0 ..< M where dp[i - 1][j] >= 0 {
-            let ballCount = dp[i - 1][j]
-            
-            // 選ばない場合
-            dp[i][j] = ballCount
-            
-            // 選ぶ場合
-            let newBallCount = ballCount + 1
-            let weight = j + W[i - 1]
-            if weight == M {
-                if newBallCount % 2 == 1 {
-                    print("Yes")
-                    return
+        for j in 0 ..< M {
+            for k in 0 ..< 2 where dp[i - 1][j][k] {
+                // 選ばない場合
+                dp[i][j][k] = true
+                
+                // 選ぶ場合
+                let newK = (k + 1) % 2
+                let weight = j + W[i - 1]
+                if weight == M {
+                    if newK == 1 {
+                        print("Yes")
+                        return
+                    }
+                } else if weight < M {
+                    dp[i][weight][newK] = true
                 }
-            } else if weight < M {
-                dp[i][weight] = newBallCount
             }
         }
     }
