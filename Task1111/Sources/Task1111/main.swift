@@ -9,48 +9,48 @@ func main(read: () -> String) {
             result.append(n % 10)
             n /= 10
         }
-        return result
+        return result.reversed()
     }()
     
     // dp[i][j][k]
-    // k=0: 下i桁の和をAで割った余りがjになるものがいくつあるか
-    // k=1: dp[i][j][0]のうち、i桁目がdigits[i]より小さい場合のものがいくつか
-    var dp = [[[Int]]](repeating: .init(repeating: .init(repeating: 0, count: 2), count: A), count: digits.count + 1)
-    dp[0][0][0] = 1
-    dp[0][0][1] = 1
-
-    // dpテーブルを埋めてゆく
-    // この結果、すべてのi, jに対するdp[i][j][1]が求まる
-    for i in 0 ..< digits.count {
-        for j in 0 ..< A where dp[i][j][0] > 0 {
-            let dpij0 = dp[i][j][0]
+    // 上からi桁の和をAで割った余りがjになるものがいくつあるか
+    // k=0: N未満かどうか未確定のもの
+    // k=1: N未満だと確定しているもの
+    var dp = [[[Int]]](repeating: .init(repeating: .init(repeating: 0, count: 2), count: A), count: digits.count)
+    
+    // 一番上の桁で初期化
+    for x in 0 ..< digits[0] {
+        dp[0][x % A][1] += 1
+    }
+    dp[0][digits[0] % A][0] += 1
+    
+    // 次の桁からdpテーブルを埋めていく
+    for i in 1 ..< digits.count {
+        let d = digits[i]
+        for j in 0 ..< A {
             for x in 0 ... 9 {
-                let mod = (j + x) % A
-                dp[i + 1][mod][0] += dpij0
-                if x < digits[i] {
-                    dp[i + 1][mod][1] += dpij0
+                if x < d {
+                    // 1つ上の桁でN未満と決まっていたものはそのままN未満
+                    dp[i][(j + x) % A][1] += dp[i - 1][j][1]
+                    // 1つ上の桁でN未満と決まっていなかったものもN未満と決まる
+                    dp[i][(j + x) % A][1] += dp[i - 1][j][0]
+                } else if x == d {
+                    // 1つ上の桁でN未満と決まっていたものはそのままN未満
+                    dp[i][(j + x) % A][1] += dp[i - 1][j][1]
+                    // 1つ上の桁でN未満と決まっていなかったものは、やはり決まらないまま
+                    dp[i][(j + x) % A][0] += dp[i - 1][j][0]
+                } else {
+                    // 1つ上の桁でN未満と決まっていたものはそのままN未満
+                    dp[i][(j + x) % A][1] += dp[i - 1][j][1]
+                    // 1つ上の桁でN未満と決まっていなかったものはNを超えることが確定
                 }
             }
         }
     }
-
-    // 上の桁から足していく
-    // 例えば、 N = 357 の場合、 digits は [ 7, 5, 3 ]
-    // ループの1回目(i=3)で ans に足すのは、各桁が 0, 0...2, 0...9, 0...9 の数（  0 <= x <= 299）のうち、桁の和がAで割り切れる数の個数
-    // ループの2回目(i=2)で ans に足すのは、各桁が 0,     3, 0...4, 0...9 の数（300 <= x <= 349）のうち、桁の和がAで割り切れる数の個数
-    // ループの3回目(i=1)で ans に足すのは、各桁が 0,     3,     5, 0...6 の数（350 <= x <= 356）のうち、桁の和がAで割り切れる数の個数
-    // ループを抜けたあとに ans に足すのは、各桁が 0,     3,     5,     7 の数（x == 357）       のうち、桁の和がAで割り切れる数の個数
-    var ans = 0
-    var sum = 0
-    for i in (1 ... digits.count).reversed() {
-        ans += dp[i][(A - sum) % A][1]
-        sum = (sum + digits[i - 1]) % A
-    }
-    ans += dp[0][(A - sum) % A][1]
     
-    // 求めたいのは1以上N以下の数なので、0（必ずAで割り切れる）の分を除く
-    ans -= 1
-    
+    let ans = dp[digits.count - 1][0][0] // 0以上N未満の数を A で割った余りが 0 のもの
+            + dp[digits.count - 1][0][1] // N を A で割った余りが 0 のもの
+            - 1                          // 0（Aで割った余りは0）を除く（1以上N未満が欲しいものなので）
     print(ans)
 }
 
