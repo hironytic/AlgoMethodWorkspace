@@ -11,7 +11,7 @@ func main(read: () -> String) {
     // i日目にjの店で買った場合のi日目までの水草の価格の総和の最小値
     // ここで
     // j=0,1,2: それぞれX,Y,Zで買った場合
-    // k=0,1: それぞれ連続購入が0日,1日以上の場合
+    // k=0,1: それぞれ連続購入が1日,2日以上の場合
     var dp: [[[Int]]] = .init(repeating: .init(repeating: .init(repeating: Int.max, count: 2), count: 3), count: N)
     
     dp[0][0][0] = price[0][0]
