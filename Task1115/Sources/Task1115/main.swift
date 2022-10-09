@@ -7,44 +7,42 @@ func main(read: () -> String) {
     let R = read().asList(ofInt)
     let price = [P, Q, R]
     
-    // dp[i][j]
+    // dp[i][j][k]
     // i日目にjの店で買った場合のi日目までの水草の価格の総和の最小値
     // ここで
-    // j=0: Xで買った場合（2日以上続けて買った場合を除く）
-    // J=1: Yで買った場合（2日以上続けて買った場合を除く）
-    // j=2: Zで買った場合（2日以上続けて買った場合を除く）
-    // j=3: Xで買った場合（2日以上続けて買った場合）
-    // j=4: Yで買った場合（2日以上続けて買った場合）
-    // j=5: Zで買った場合（2日以上続けて買った場合）
-    var dp: [[Int]] = .init(repeating: .init(repeating: Int.max, count: 6), count: N)
+    // j=0,1,2: それぞれX,Y,Zで買った場合
+    // k=0,1: それぞれ連続購入が0日,1日以上の場合
+    var dp: [[[Int]]] = .init(repeating: .init(repeating: .init(repeating: Int.max, count: 2), count: 3), count: N)
     
-    dp[0][0] = price[0][0]
-    dp[0][1] = price[1][0]
-    dp[0][2] = price[2][0]
+    dp[0][0][0] = price[0][0]
+    dp[0][1][0] = price[1][0]
+    dp[0][2][0] = price[2][0]
     
-    func update(_ i: Int, _ j: Int, value: Int) {
-        dp[i][j] = min(dp[i][j], value)
+    func update(_ i: Int, _ j: Int, _ k: Int, value: Int) {
+        dp[i][j][k] = min(dp[i][j][k], value)
     }
     
     for i in 1 ..< N {
-        for j in 0 ... 5 where dp[i - 1][j] != Int.max { // 前日に買ったお店
-            for k in 0 ... 2 { // 当日買ったお店
-                var p = price[k][i]
-                if j % 3 == k {
-                    if j >= 3 {
-                        p -= B
+        for j in 0 ... 2 { // 前日に買ったお店
+            for k in 0 ... 1 where dp[i - 1][j][k] != Int.max { // 連続購入
+                for s in 0 ... 2 { // 当日買ったお店
+                    var p = dp[i - 1][j][k] + price[s][i]
+                    if j == s {
+                        if k == 0 {
+                            p -= A
+                        } else {
+                            p -= B
+                        }
+                        update(i, s, 1, value: p)
                     } else {
-                        p -= A
+                        update(i, s, 0, value: p)
                     }
-                    update(i, k + 3, value: dp[i - 1][j] + p)
-                } else {
-                    update(i, k, value: dp[i - 1][j] + p)
                 }
             }
         }
     }
     
-    let ans = dp[N - 1].min()!
+    let ans = dp[N - 1].reduce(Int.max) { min($0, $1.min()!) }
     print(ans)
 }
 
