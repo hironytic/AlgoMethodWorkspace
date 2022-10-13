@@ -71,18 +71,17 @@ func main(read: () -> String) {
         return true
     }
 
-    // values[bitsPair]
-    // bitsPairの下位Mビットが真ん中の列のbits、その上のMビットが左の列のbitsとしたときに、
+    // values[leftBits][middleBits]
+    // leftBitsが左の列のbits、middleBitsが真ん中の列のbitsとしたときに、
     // 条件を満たすような右の列になり得るbitsの配列
     // 求めるのにかかる計算量は O(2^(3*M) * M)。M=5なら O(163,840)
-    let values: [[Int]] = { () -> [[Int]] in
-        var result = [[Int]](repeating: [], count: 1 << (M * 2))
+    let values: [[[Int]]] = { () -> [[[Int]]] in
+        var result = [[[Int]]](repeating: .init(repeating: [], count: 1 << M), count: 1 << M)
         for leftBits in 0 ..< (1 << M) {
             for middleBits in 0 ..< (1 << M) {
-                let bitsPair = (leftBits << M) | middleBits
                 for rightBits in 0 ..< (1 << M) {
                     if validate(leftBits, middleBits, rightBits) {
-                        result[bitsPair].append(rightBits)
+                        result[leftBits][middleBits].append(rightBits)
                     }
                 }
             }
@@ -90,37 +89,38 @@ func main(read: () -> String) {
         return result
     }()
 
-    // dp[j][bitsPair]
+    // dp[j][leftBits][middleBits]
     // j列目まで塗ったときに、
-    // j列目がbitsPairの下位Mビットのbits、j-1列目がその上のMビットのbitsになる場合の
+    // j-1列目がleftBits、j列目がmiddleBitsになる場合の
     // 塗った数字の総和の最小値
-    var dp = [[Int]](repeating: .init(repeating: Int.max, count: 1 << (M * 2)), count: N)
+    var dp = [[[Int]]](repeating: .init(repeating:.init(repeating: Int.max, count: 1 << M), count: 1 << M), count: N)
     
-    func update(_ j: Int, _ bitsPair: Int, value: Int) {
-        dp[j][bitsPair] = min(dp[j][bitsPair], value)
+    func update(_ j: Int, _ leftBits: Int, _ middleBits: Int, value: Int) {
+        dp[j][leftBits][middleBits] = min(dp[j][leftBits][middleBits], value)
     }
     
     // j=0
-    for bits in values[(allBlack << M) | allBlack] {
-        update(0, (allBlack << M) | bits, value: columnSum(0, bits: bits))
+    for bits in values[allBlack][allBlack] {
+        update(0, allBlack, bits, value: columnSum(0, bits: bits))
     }
     
     // j>0
     // 最高でO(2^(3*M) * N)。M=5,N=100なら3,276,800
     for j in 1 ..< N {
-        for bitsPair in 0 ..< (1 << (M * 2)) {
-            let value = dp[j - 1][bitsPair]
-            guard value != Int.max else { continue }
-            
-            let shiftedMiddleBits = (bitsPair & ((1 << M) - 1)) << M
-            for rightBits in values[bitsPair] {
-                update(j, shiftedMiddleBits | rightBits, value: value + columnSum(j, bits: rightBits))
+        for leftBits in 0 ..< (1 << M) {
+            for middleBits in 0 ..< (1 << M) {
+                let value = dp[j - 1][leftBits][middleBits]
+                guard value != Int.max else { continue }
+                
+                for rightBits in values[leftBits][middleBits] {
+                    update(j, middleBits, rightBits, value: value + columnSum(j, bits: rightBits))
+                }
             }
         }
     }
     
-    let ans = dp[N - 1].min()!
-    print(ans)    
+    let ans = dp[N - 1].lazy.map { $0.min()! }.min()!
+    print(ans)
 }
 
 // ----------------------------------------------------------
