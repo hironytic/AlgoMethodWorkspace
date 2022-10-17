@@ -5,11 +5,8 @@ func main(read: () -> String) {
     let T = read().asList(ofInt)
     let F = read().asList(ofInt)
 
-    // 各問題の開始期限
-    let S = F.lazy.enumerated().map { $0.element - T[$0.offset] }
-
-    // 開始期限の早い順に並べかえたときの、各問題の番号
-    let PIndex = S.lazy.enumerated().sorted(by: { $0.element < $1.element }).map { $0.offset }
+    // 終了期限の早い順に並べかえたときの、各問題の番号
+    let PIndex = F.lazy.enumerated().sorted(by: { $0.element < $1.element }).map { $0.offset }
     
     // dp[i][j]
     // PIndexのi-1番目までを解くかスキップするかしたときに
@@ -31,8 +28,8 @@ func main(read: () -> String) {
             update(i + 1, j, value: solved)
             
             // 問題pをスキップしない場合
-            // ただし、その問題の開始期限を過ぎていない場合に限る
-            if j <= S[p] {
+            // ただし、その問題を解き終わったときに終了期限を過ぎていない場合に限る
+            if j + T[p] <= F[p] {
                 update(i + 1, j + T[p], value: solved + 1)
             }
         }
