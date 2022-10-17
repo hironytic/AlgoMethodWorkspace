@@ -9,7 +9,7 @@ func main(read: () -> String) {
     let S = F.lazy.enumerated().map { $0.element - T[$0.offset] }
 
     // 開始期限の早い順に並べかえたときの、各問題の番号
-    let PIndex = S.lazy.enumerated().sorted(by: <).map { $0.offset }
+    let PIndex = S.lazy.enumerated().sorted(by: { $0.element < $1.element }).map { $0.offset }
     
     // dp[i][j]
     // PIndexのi-1番目までを解くかスキップするかしたときに
@@ -21,7 +21,6 @@ func main(read: () -> String) {
         dp[i][j] = max(dp[i][j], value)
     }
     
-    var ans = 0
     for i in 0 ..< N {
         let p = PIndex[i]
         for j in 0 ..< 10000 {
@@ -34,12 +33,12 @@ func main(read: () -> String) {
             // 問題pをスキップしない場合
             // ただし、その問題の開始期限を過ぎていない場合に限る
             if j <= S[p] {
-                ans = max(ans, solved + 1)
                 update(i + 1, j + T[p], value: solved + 1)
             }
         }
     }
     
+    let ans = dp[N].max()!
     print(ans)
 }
 
