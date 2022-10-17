@@ -31,19 +31,15 @@ let data4 = TestData(name: "Data 4", text: """
 """)
 
 let data5 = TestData(name: "Data 5", text: """
-6 27
-1 4 4 1 11 11
-1 2 3 4 1 3
 """, expected: """
-No
 """)
 
 let validationList = [
-//    data1,
-//    data2,
-//    data3,
+    data1,
+    data2,
+    data3,
 //    data4,
-    data5,
+//    data5,
 ]
 
 // ----------------------------------------------------------

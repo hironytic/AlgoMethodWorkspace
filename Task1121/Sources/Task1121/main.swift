@@ -1,77 +1,36 @@
 import Foundation
 
-struct ColorSet {
-    var bits = [UInt64](repeating: 0, count: 4)
-    
-    init() {
-    }
-    
-    private func slot(of color: Int) -> (index: Int, mask: UInt64) {
-        return (index: color / 64, mask: 1 << (color % 64))
-    }
-    
-    var isEmpty: Bool {
-        return !bits.contains { $0 > 0 }
-    }
-    
-    func contains(_ color: Int) -> Bool {
-        let (index, mask) = slot(of: color)
-        return bits[index] & mask != 0
-    }
-    
-    mutating func insert(_ color: Int) {
-        let (index, mask) = slot(of: color)
-        bits[index] |= mask
-    }
-    
-    mutating func intersect(with other: ColorSet) {
-        for i in 0 ..< 4 {
-            bits[i] &= other.bits[i]
-        }
-    }
-}
-
 func main(read: () -> String) {
     let (N, M) = read().asList(ofInt).asTuple()
     let W = read().asList(ofInt)
     let C = read().asList(ofInt)
 
-    // dp[i][j]
-    // i-1番目のボールまでを選ぶか選ばないかしたときに、重さがjになるボールの入れ方が
-    // 存在するかどうか。
-    // 存在しなければnil、存在すればそのパターンなら必ず存在するという色を含むColorSet
-    var dp: [[ColorSet?]] = .init(repeating: .init(repeating: nil, count: M), count: N + 1)
-    dp[0][0] = ColorSet()
-    
-    func update(_ i: Int, _ j: Int, value: ColorSet) {
-        if var cs = dp[i][j] {
-            if cs.isEmpty {
-                dp[i][j] = value
-            } else {
-                cs.intersect(with: value)
-                dp[i][j] = cs
-            }
-        } else {
-            dp[i][j] = value
-        }
+    // cw
+    // 色 → その色のボールの重さの配列
+    var cw = [[Int]](repeating: [], count: 256)
+    for i in 0 ..< N {
+        cw[C[i]].append(W[i])
     }
     
-    for i in 0 ..< N {
-        for j in 0 ..< M {
-            guard var cs = dp[i][j] else { continue }
+    // dp[c][j]
+    // c-1番目までの色のボールを選ぶか選ばないかしたときに、
+    // 重さがjになるボールの入れ方が存在するかどうか。
+    var dp: [[Bool]] = .init(repeating: .init(repeating: false, count: M), count: 256 + 1)
+    dp[0][0] = true
+    
+    for c in 0 ..< 256 {
+        for j in 0 ..< M where dp[c][j] {
+            // c番目の色のボールを選ばない場合
+            dp[c + 1][j] = true
             
-            // i番目のボールを選ばない場合
-            update(i + 1, j, value: cs)
-            
-            // i番目のボールを選ぶ場合
-            if (!cs.contains(C[i])) { // 同じ色を含んでいたら選べない
-                let nj = j + W[i]
+            // c番目の色のボールを選ぶ場合
+            for w in cw[c] {
+                let nj = j + w
                 if nj == M {
                     print("Yes")
                     return
                 } else if nj < M {
-                    cs.insert(C[i])
-                    update(i + 1, nj, value: cs)
+                    dp[c + 1][nj] = true
                 }
             }
         }
