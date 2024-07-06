@@ -7,25 +7,25 @@ fun main() {
         input
         1
         2 3
-""".trimIndent(), """
+    """.trimIndent(), """
         input 1 2 3
-""".trimIndent())
+    """.trimIndent())
 
     val data2 = TestData("Data 2", """
-""".trimIndent(), """
-""".trimIndent())
+    """.trimIndent(), """
+    """.trimIndent())
 
-    val data3 = TestData("Data 2", """        
-""".trimIndent(), """
-""".trimIndent())
+    val data3 = TestData("Data 3", """        
+    """.trimIndent(), """
+    """.trimIndent())
 
-    val data4 = TestData("Data 2", """        
-""".trimIndent(), """
-""".trimIndent())
+    val data4 = TestData("Data 4", """        
+    """.trimIndent(), """
+    """.trimIndent())
 
-    val data5 = TestData("Data 2", """        
-""".trimIndent(), """
-""".trimIndent())
+    val data5 = TestData("Data 5", """        
+    """.trimIndent(), """
+    """.trimIndent())
 
     val validationList = listOf(
         data1,
@@ -67,6 +67,9 @@ class TestData(
             }
         }
         print(actual)
+        if (actual[actual.length - 1] != '\n') {
+            println()
+        }
 
         if (expected.isNotEmpty()) {        
             if (actual.trim() == expected.trim()) {
