@@ -4,31 +4,36 @@ options:
     question: Task number?
     required: true
     type: string
+  - name: added
+    description: Added word for the generated project name
+    question: Added word?
+    required: true
+    type: string
 
 files:
-  - path: "Task{{ task }}/.idea/inspectionProfiles/Project_Default.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/inspectionProfiles/Project_Default.xml"
     template: template-kotlin/.idea/inspectionProfiles/Project_Default.xml
-  - path: "Task{{ task }}/.idea/libraries/KotlinJavaRuntime.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/libraries/KotlinJavaRuntime.xml"
     template: template-kotlin/.idea/libraries/KotlinJavaRuntime.xml
-  - path: "Task{{ task }}/.idea/runConfigurations/ValidationKt.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/runConfigurations/ValidationKt.xml"
     template: template-kotlin/.idea/runConfigurations/ValidationKt.xml
-  - path: "Task{{ task }}/.idea/.gitignore"
+  - path: "Task{{ task }}{{ added }}/.idea/.gitignore"
     template: template-kotlin/.idea/.gitignore
-  - path: "Task{{ task }}/.idea/kotlinc.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/kotlinc.xml"
     template: template-kotlin/.idea/kotlinc.xml
-  - path: "Task{{ task }}/.idea/misc.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/misc.xml"
     template: template-kotlin/.idea/misc.xml
-  - path: "Task{{ task }}/.idea/modules.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/modules.xml"
     template: template-kotlin/.idea/modules.xml
-  - path: "Task{{ task }}/.idea/vcs.xml"
+  - path: "Task{{ task }}{{ added }}/.idea/vcs.xml"
     template: template-kotlin/.idea/vcs.xml
-  - path: "Task{{ task }}/src/Main.kt"
+  - path: "Task{{ task }}{{ added }}/src/Main.kt"
     template: template-kotlin/src/Main.kt
-  - path: "Task{{ task }}/src/Validation.kt"
+  - path: "Task{{ task }}{{ added }}/src/Validation.kt"
     template: template-kotlin/src/Validation.kt
-  - path: "Task{{ task }}/.gitignore"
+  - path: "Task{{ task }}{{ added }}/.gitignore"
     template: template-kotlin/.gitignore
-  - path: "Task{{ task }}/README.md"
+  - path: "Task{{ task }}{{ added }}/README.md"
     template: template-kotlin/README.md
-  - path: "Task{{ task }}/Task{{ task }}.iml"
+  - path: "Task{{ task }}{{ added }}/Task{{ task }}{{ added }}.iml"
     template: template-kotlin/Task.iml

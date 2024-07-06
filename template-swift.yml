@@ -4,17 +4,22 @@ options:
     question: Task number?
     required: true
     type: string
+  - name: added
+    description: Added word for the generated project name
+    question: Added word?
+    required: true
+    type: string
 
 files:
-  - path: "Task{{ task }}/.gitignore"
+  - path: "Task{{ task }}{{ added }}/.gitignore"
     template: template-swift/.gitignore
-  - path: "Task{{ task }}/Package.swift"
+  - path: "Task{{ task }}{{ added }}/Package.swift"
     template: template-swift/Package.swift
-  - path: "Task{{ task }}/README.md"
+  - path: "Task{{ task }}{{ added }}/README.md"
     template: template-swift/README.md
-  - path: "Task{{ task }}/Sources/Task{{ task }}/main.swift"
+  - path: "Task{{ task }}{{ added }}/Sources/Task{{ task }}{{ added }}/main.swift"
     template: template-swift/Sources/Task/main.swift
-  - path: "Task{{ task }}/Sources/Task{{ task }}/validation.swift"
+  - path: "Task{{ task }}{{ added }}/Sources/Task{{ task }}{{ added }}/validation.swift"
     template: template-swift/Sources/Task/validation.swift
-  - path: "Task{{ task }}/Sources/TestData/TestData.swift"
+  - path: "Task{{ task }}{{ added }}/Sources/TestData/TestData.swift"
     template: template-swift/Sources/TestData/TestData.swift

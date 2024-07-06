@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Task{{ task }}",
+    name: "Task{{ task }}{{ added }}",
     targets: [
         .target(
             name: "TestData",
@@ -13,7 +13,7 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "Task{{ task }}",
+            name: "Task{{ task }}{{ added }}",
             dependencies: ["TestData"],
             swiftSettings: [
                 .define("DEVELOPING", .when(configuration: .debug))

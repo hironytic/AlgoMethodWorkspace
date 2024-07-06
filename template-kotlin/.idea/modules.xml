@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Task{{ task }}.iml" filepath="$PROJECT_DIR$/Task{{ task }}.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Task{{ task }}{{ added }}.iml" filepath="$PROJECT_DIR$/Task{{ task }}{{ added }}.iml" />
     </modules>
   </component>
 </project>
