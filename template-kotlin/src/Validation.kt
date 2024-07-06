@@ -15,15 +15,15 @@ fun main() {
     """.trimIndent(), """
     """.trimIndent())
 
-    val data3 = TestData("Data 3", """        
+    val data3 = TestData("Data 3", """
     """.trimIndent(), """
     """.trimIndent())
 
-    val data4 = TestData("Data 4", """        
+    val data4 = TestData("Data 4", """
     """.trimIndent(), """
     """.trimIndent())
 
-    val data5 = TestData("Data 5", """        
+    val data5 = TestData("Data 5", """
     """.trimIndent(), """
     """.trimIndent())
 
