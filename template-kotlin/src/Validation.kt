@@ -44,7 +44,7 @@ fun main() {
 class TestData(
     private val name: String,
     private val data: String,
-    private val expected: String,
+    private val expected: String? = null,
 ) {
     fun execute(block: () -> Unit) {
         println("--- [$name] -------------------")
@@ -71,12 +71,47 @@ class TestData(
             println()
         }
 
-        if (expected.isNotEmpty()) {        
-            if (actual.trim() == expected.trim()) {
+        validate(actual)?.let {
+            if (it) {
                 println("✅ OK")
             } else {
                 println("❌ NG")
             }
+        }
+    }
+
+    private data class LineReader(val data: String) {
+        private val lines = data.split("\n").map { it.trim() }
+        private var nextLine = 0
+
+        fun readln(): String {
+            return lines[nextLine++]
+        }
+
+        fun readlnOrNull(): String? {
+            if (nextLine < lines.size) {
+                return lines[nextLine++]
+            } else {
+                return null
+            }
+        }
+    }
+
+    private fun validate(actual: String): Boolean? {
+        if (expected == null) {
+            return null
+        } else {
+            val actualReader = LineReader(actual)
+            val expectedReader = LineReader(expected)
+            var expectedLine = expectedReader.readlnOrNull()
+            while (expectedLine != null) {
+                val actualLine = actualReader.readlnOrNull()
+                if (expectedLine != actualLine) {
+                    return false
+                }
+                expectedLine = expectedReader.readlnOrNull()
+            }
+            return true
         }
     }
 }
